@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 import React, {
 	Component,
@@ -10,6 +10,7 @@ import {
 	Text,
 	ViewPropTypes,
 	View,
+	SectionList 
 } from 'react-native';
 
 import SwipeRow from './SwipeRow';
@@ -164,7 +165,7 @@ class SwipeListView extends Component {
 	}
 
 	render() {
-		const { useFlatList, renderListView, ...props } = this.props;
+		const { useSectionList, useFlatList, renderListView, ...props } = this.props;
 
 		if (renderListView) {
 			return renderListView(
@@ -172,8 +173,21 @@ class SwipeListView extends Component {
 				this.setRefs.bind(this),
 				this.onScroll.bind(this),
 				useFlatList ? this.renderItem.bind(this) : this.renderRow.bind(this, this._rows),
+				useSectionList ? this.renderItem.bind(this) : this.renderRow.bind(this, this._rows),		    
 			);
 		}
+	   
+		if (useSectionList) {
+			return (
+				<SectionList
+					{...props}
+					ref={ c => this.setRefs(c) }
+					onScroll={ e => this.onScroll(e) }
+					renderItem={(rowData) => this.renderItem(rowData, this._rows)}
+				/>
+			);
+		}
+
 
 		if (useFlatList) {
 			return (
@@ -263,7 +277,7 @@ SwipeListView.propTypes = {
 	 *
 	 * By default, hidden row size calculations are only done on the first onLayout event
 	 * for performance reasons.
-	 * Passing ```true``` here will cause calculations to run on every onLayout event.
+	 * Passing true here will cause calculations to run on every onLayout event.
 	 * You may want to do this if your rows' sizes can change.
 	 * One case is a SwipeListView with rows of different heights and an options to delete rows.
 	 */
@@ -321,7 +335,7 @@ SwipeListView.propTypes = {
 	previewDuration: PropTypes.number,
 	/**
 	 * TranslateX value for the slide out preview animation
-	 * Default: 0.5 * props.rightOpenValue
+	  Default: 0.5  props.rightOpenValue
 	 */
 	previewOpenValue: PropTypes.number,
 	/**
